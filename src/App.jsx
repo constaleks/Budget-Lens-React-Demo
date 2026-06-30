@@ -6,12 +6,57 @@ import { categoryStyles, defaultCategoryStyle } from './utils/categoryStyles';
 function App() {
     const [expenses, setExpenses] = useState(mockData);
 
+    const [editingExpense, setEditingExpense] = useState(null);
+
+    const [deletingExpense, setDeletingExpense] = useState(null);
+
+    const [filters, setFilters] = useState({
+        category: '',
+        start: '',
+        end: '',
+    });
+
     const [form, setForm] = useState({
         description: '',
         amount: '',
         date: '',
         category: 'Home',
     });
+
+    const [editForm, setEditForm] = useState({
+        description: '',
+        amount: '',
+        date: '',
+        category: 'Home',
+    });
+
+    const handleOpenEdit = (expense) => {
+        setEditingExpense(expense);
+        setEditForm({
+            description: expense.description,
+            amount: String(expense.amount),
+            date: expense.date,
+            category: expense.category,
+        });
+    };
+
+    const handleCloseEdit = () => {
+        setEditingExpense(null);
+        setEditForm({
+            description: '',
+            amount: '',
+            date: '',
+            category: 'Home',
+        });
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -24,6 +69,10 @@ function App() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!form.description || !form.amount || !form.date) {
+            return;
+        }
+
         const newExpense = {
             id: expenses.length > 0 ? Math.max(...expenses.map((exp) => exp.id)) + 1 : 1,
             description: form.description,
@@ -33,7 +82,87 @@ function App() {
         };
 
         setExpenses((prev) => [newExpense, ...prev]);
+
+        setForm({
+            description: '',
+            amount: '',
+            date: '',
+            category: 'Home',
+        });
     };
+
+    const handleUpdateExpense = () => {
+        setExpenses((prev) =>
+            prev.map((expense) => {
+                if (expense.id === editingExpense.id) {
+                    return {
+                        ...expense,
+                        description: editForm.description,
+                        amount: parseFloat(editForm.amount),
+                        date: editForm.date,
+                        category: editForm.category,
+                    };
+                }
+
+                return expense;
+            }),
+        );
+
+        setEditingExpense(null);
+    };
+
+    const handleRemove = (id) => {
+        setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+    };
+
+    const handleOpenDelete = (expense) => {
+        setDeletingExpense(expense);
+    };
+
+    const handleCloseDelete = () => {
+        setDeletingExpense(null);
+    };
+
+    const handleConfirmDelete = () => {
+        handleRemove(deletingExpense.id);
+        setDeletingExpense(null);
+    };
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const filteredExpenses = expenses.filter((expense) => {
+        if (filters.category && expense.category !== filters.category) {
+            return false;
+        }
+
+        if (filters.start && expense.date < filters.start) {
+            return false;
+        }
+
+        if (filters.end && expense.date > filters.end) {
+            return false;
+        }
+
+        return true;
+    });
+
+    const resetFilters = () => {
+        setFilters({
+            category: '',
+            start: '',
+            end: '',
+        });
+    };
+
+    const total = filteredExpenses.reduce((sum, expense) => {
+        return sum + expense.amount;
+    }, 0);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
@@ -69,6 +198,9 @@ function App() {
                                 <span className="block mb-1.5 text-slate-400 font-medium">Start date</span>
                                 <input
                                     type="date"
+                                    name="start"
+                                    value={filters.start}
+                                    onChange={handleFilterChange}
                                     className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
                                 />
                             </label>
@@ -76,19 +208,29 @@ function App() {
                                 <span className="block mb-1.5 text-slate-400 font-medium">End date</span>
                                 <input
                                     type="date"
+                                    name="end"
+                                    value={filters.end}
+                                    onChange={handleFilterChange}
                                     className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
                                 />
                             </label>
                             <label className="text-sm md:col-span-2">
                                 <span className="block mb-1.5 text-slate-400 font-medium">Category</span>
-                                <select className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
-                                    <option>All categories</option>
-                                    <option>Home</option>
-                                    <option>Food</option>
-                                    <option>Health</option>
+                                <select
+                                    name="category"
+                                    value={filters.category}
+                                    onChange={handleFilterChange}
+                                    className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
+                                    <option value="">All categories</option>
+                                    <option value="Home">Home</option>
+                                    <option value="Food">Food</option>
+                                    <option value="Health">Health</option>
                                 </select>
                             </label>
-                            <button className="rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700/70 px-4 py-2 text-sm text-slate-300 hover:text-slate-100 transition-colors">
+
+                            <button
+                                onClick={resetFilters}
+                                className="cursor-pointer rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700/70 px-4 py-2 text-sm text-slate-300 hover:text-slate-100 transition-colors">
                                 Clear
                             </button>
                         </div>
@@ -141,12 +283,7 @@ function App() {
                                 <select
                                     name="category"
                                     value={form.category}
-                                    onChange={(e) =>
-                                        setForm({
-                                            ...form,
-                                            category: e.target.value,
-                                        })
-                                    }
+                                    onChange={handleChange}
                                     className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
                                     <option>Home</option>
                                     <option>Food</option>
@@ -154,7 +291,7 @@ function App() {
                                 </select>
                             </label>
 
-                            <button className="w-full rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold px-4 py-2.5 transition-colors flex items-center justify-center gap-2">
+                            <button className="cursor-pointer w-full rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold px-4 py-2.5 transition-colors flex items-center justify-center gap-2">
                                 <span className="text-lg leading-none">+</span>
                                 Add Expense
                             </button>
@@ -165,7 +302,7 @@ function App() {
                 <div className="mb-4 flex items-center gap-3">
                     <span className="text-sm text-slate-400">Total spending</span>
                     <span className="rounded-xl border border-sky-500/20 bg-sky-500/10 text-sky-300 px-4 py-1 font-bold text-base">
-                        1,315.00€
+                        {total.toFixed(2)}€
                     </span>
                 </div>
 
@@ -188,24 +325,39 @@ function App() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/60">
-                                {expenses.map((expense) => (
-                                    <tr key={expense.id} className="hover:bg-slate-800/30 transition-colors">
-                                        <td className="px-5 py-3.5 text-slate-400">{expense.date}</td>
-                                        <td className="px-5 py-3.5 font-medium">{expense.description}</td>
-                                        <td className="px-5 py-3.5">
-                                            <span
-                                                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${categoryStyles[expense.category] || defaultCategoryStyle}`}>
-                                                {expense.category}
-                                            </span>
-                                        </td>
-                                        <td className="px-5 py-3.5 text-right font-semibold">{expense.amount.toFixed(2)}€</td>
-                                        <td className="px-5 py-3.5 text-right">
-                                            <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
-                                                Remove
-                                            </button>
+                                {filteredExpenses.length > 0 ? (
+                                    filteredExpenses.map((expense) => (
+                                        <tr key={expense.id} className="hover:bg-slate-800/30 transition-colors">
+                                            <td className="px-5 py-3.5 text-slate-400">{expense.date}</td>
+                                            <td className="px-5 py-3.5 font-medium">{expense.description}</td>
+                                            <td className="px-5 py-3.5">
+                                                <span
+                                                    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${categoryStyles[expense.category] || defaultCategoryStyle}`}>
+                                                    {expense.category}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3.5 text-right font-semibold">{expense.amount.toFixed(2)}€</td>
+                                            <td className="px-5 py-3.5 text-right">
+                                                <button
+                                                    onClick={() => handleOpenEdit(expense)}
+                                                    className="mr-2 cursor-pointer text-green-400/70 hover:text-green-300 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/5 px-3 py-1 rounded-lg text-xs transition-all">
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleOpenDelete(expense)}
+                                                    className="cursor-pointer text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr className="hover:bg-slate-800/30 transition-colors">
+                                        <td colspan="5" className="px-5 py-3.5 text-slate-400 text-center">
+                                            No expenses
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -241,6 +393,101 @@ function App() {
                     </div>
                 </section>
             </main>
+
+            {editingExpense && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4">
+                    <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-700 p-5">
+                        <h2 className="text-xl font-semibold mb-4">Edit Expense</h2>
+
+                        <div className="space-y-3">
+                            <label className="block text-sm">
+                                <span className="block mb-1 text-slate-300">Description</span>
+                                <input
+                                    type="text"
+                                    name="description"
+                                    value={editForm.description}
+                                    onChange={handleEditChange}
+                                    className="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2"
+                                />
+                            </label>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <label className="block text-sm">
+                                    <span className="block mb-1 text-slate-300">Amount</span>
+                                    <input
+                                        type="number"
+                                        name="amount"
+                                        value={editForm.amount}
+                                        onChange={handleEditChange}
+                                        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2"
+                                    />
+                                </label>
+
+                                <label className="block text-sm">
+                                    <span className="block mb-1 text-slate-300">Date</span>
+                                    <input
+                                        type="date"
+                                        name="date"
+                                        value={editForm.date}
+                                        onChange={handleEditChange}
+                                        className="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2"
+                                    />
+                                </label>
+                            </div>
+
+                            <label className="block text-sm">
+                                <span className="block mb-1 text-slate-300">Category</span>
+                                <select
+                                    name="category"
+                                    value={editForm.category}
+                                    onChange={handleEditChange}
+                                    className="w-full rounded-xl bg-slate-800 border border-slate-700 px-3 py-2">
+                                    <option>Home</option>
+                                    <option>Food</option>
+                                    <option>Health</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div className="flex justify-center gap-4 mt-4">
+                            <button
+                                onClick={handleUpdateExpense}
+                                className="cursor-pointer text-green-400/70 hover:text-green-300 border border-green-400/20 hover:border-green-400/40 hover:bg-green-400/5 px-5 py-2 rounded-lg text-xs transition-all">
+                                Save
+                            </button>
+                            <button
+                                onClick={handleCloseEdit}
+                                className="cursor-pointer text-slate-400/70 hover:text-slate-300 border border-slate-400/20 hover:border-slate-400/40 hover:bg-slate-400/5 px-5 py-2 rounded-lg text-xs transition-all">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {deletingExpense && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4">
+                    <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-700 p-5">
+                        <h2 className="text-xl font-semibold mb-2">Remove Expense</h2>
+                        <p className="text-sm text-slate-400">
+                            Are you sure you want to remove &quot;{deletingExpense.description}&quot;? This action cannot be undone.
+                        </p>
+
+                        <div className="flex justify-center gap-4 mt-4">
+                            <button
+                                onClick={handleConfirmDelete}
+                                className="cursor-pointer text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-5 py-2 rounded-lg text-xs transition-all">
+                                Remove
+                            </button>
+                            <button
+                                onClick={handleCloseDelete}
+                                className="cursor-pointer text-slate-400/70 hover:text-slate-300 border border-slate-400/20 hover:border-slate-400/40 hover:bg-slate-400/5 px-5 py-2 rounded-lg text-xs transition-all">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <footer className="max-w-6xl mx-auto px-6 py-5 mt-4 border-t border-slate-800/40 flex items-center justify-between text-xs text-slate-600">
                 <span>Budget Lens</span>

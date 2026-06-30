@@ -38,8 +38,8 @@ The app will be available at `http://localhost:5173` (or the port shown in your 
 
 ## Roadmap
 
-- [ ] Add expense form (amount, category, date)
-- [ ] Delete expense functionality
-- [ ] Category-based filtering
+- [x] Add expense form (amount, category, date)
+- [x] Delete expense functionality
+- [x] Category-based filtering
 - [ ] Spending breakdown chart (Chart.js)
 - [ ] Local storage persistence
