@@ -1,122 +1,226 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+            <header className="sticky top-0 z-10 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
+                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-500/30 flex items-center justify-center">
+                            <span className="text-sky-400 text-sm font-bold">B</span>
+                        </div>
+                        <h1 className="text-xl font-bold tracking-tight">
+                            <span className="text-sky-400">Budget</span>
+                            <span className="text-slate-200"> Lens</span>
+                        </h1>
+                    </div>
+                    <span className="text-xs text-slate-500 hidden sm:block">Personal Finance Tracker</span>
+                </div>
+            </header>
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+            <main className="max-w-6xl mx-auto px-6 py-10">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold mb-1">Dashboard</h1>
+                    <p className="text-slate-400">Your financial overview, all in one place.</p>
+                </div>
 
-      <div className="ticks"></div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                    <section className="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+                        <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
+                            <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
+                            Filters
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                            <label className="text-sm">
+                                <span className="block mb-1.5 text-slate-400 font-medium">Start date</span>
+                                <input
+                                    type="date"
+                                    className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
+                                />
+                            </label>
+                            <label className="text-sm">
+                                <span className="block mb-1.5 text-slate-400 font-medium">End date</span>
+                                <input
+                                    type="date"
+                                    className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
+                                />
+                            </label>
+                            <label className="text-sm md:col-span-2">
+                                <span className="block mb-1.5 text-slate-400 font-medium">Category</span>
+                                <select className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
+                                    <option>All categories</option>
+                                    <option>Home</option>
+                                    <option>Food</option>
+                                    <option>Health</option>
+                                </select>
+                            </label>
+                            <button className="rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700/70 px-4 py-2 text-sm text-slate-300 hover:text-slate-100 transition-colors">
+                                Clear
+                            </button>
+                        </div>
+                    </section>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+                    <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+                        <h2 className="text-base font-semibold mb-4 flex items-center gap-2">
+                            <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
+                            Add Expense
+                        </h2>
+                        <form className="space-y-3">
+                            <label className="block text-sm">
+                                <span className="block mb-1.5 text-slate-400 font-medium">Description</span>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Netflix"
+                                    className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
+                                />
+                            </label>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                            <div className="grid grid-cols-2 gap-3">
+                                <label className="block text-sm">
+                                    <span className="block mb-1.5 text-slate-400 font-medium">Amount</span>
+                                    <input
+                                        type="number"
+                                        placeholder="0.00"
+                                        className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
+                                    />
+                                </label>
+                                <label className="block text-sm">
+                                    <span className="block mb-1.5 text-slate-400 font-medium">Date</span>
+                                    <input
+                                        type="date"
+                                        className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
+                                    />
+                                </label>
+                            </div>
+
+                            <label className="block text-sm">
+                                <span className="block mb-1.5 text-slate-400 font-medium">Category</span>
+                                <select className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
+                                    <option>Home</option>
+                                    <option>Food</option>
+                                    <option>Health</option>
+                                </select>
+                            </label>
+
+                            <button className="w-full rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold px-4 py-2.5 transition-colors flex items-center justify-center gap-2">
+                                <span className="text-lg leading-none">+</span>
+                                Add Expense
+                            </button>
+                        </form>
+                    </section>
+                </div>
+
+                <div className="mb-4 flex items-center gap-3">
+                    <span className="text-sm text-slate-400">Total spending</span>
+                    <span className="rounded-xl border border-sky-500/20 bg-sky-500/10 text-sky-300 px-4 py-1 font-bold text-base">
+                        1,315.00€
+                    </span>
+                </div>
+
+                <section className="rounded-2xl border border-slate-800 bg-slate-900/50 overflow-hidden mb-6">
+                    <div className="px-5 py-4 border-b border-slate-800">
+                        <h2 className="text-base font-semibold flex items-center gap-2">
+                            <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
+                            Expenses
+                        </h2>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm">
+                            <thead className="text-xs uppercase tracking-wider text-slate-500 border-b border-slate-800">
+                                <tr>
+                                    <th className="text-left px-5 py-3 font-medium">Date</th>
+                                    <th className="text-left px-5 py-3 font-medium">Description</th>
+                                    <th className="text-left px-5 py-3 font-medium">Category</th>
+                                    <th className="text-right px-5 py-3 font-medium">Amount</th>
+                                    <th className="px-5 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800/60">
+                                <tr className="hover:bg-slate-800/30 transition-colors">
+                                    <td className="px-5 py-3.5 text-slate-400">2025-11-01</td>
+                                    <td className="px-5 py-3.5 font-medium">Rent</td>
+                                    <td className="px-5 py-3.5">
+                                        <span className="inline-flex items-center rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2.5 py-0.5 text-xs font-medium">
+                                            Home
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-right font-semibold">850.00€</td>
+                                    <td className="px-5 py-3.5 text-right">
+                                        <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-slate-800/30 transition-colors">
+                                    <td className="px-5 py-3.5 text-slate-400">2025-11-02</td>
+                                    <td className="px-5 py-3.5 font-medium">Supermarket</td>
+                                    <td className="px-5 py-3.5">
+                                        <span className="inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2.5 py-0.5 text-xs font-medium">
+                                            Food
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-right font-semibold">120.00€</td>
+                                    <td className="px-5 py-3.5 text-right">
+                                        <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-slate-800/30 transition-colors">
+                                    <td className="px-5 py-3.5 text-slate-400">2025-11-04</td>
+                                    <td className="px-5 py-3.5 font-medium">Netflix</td>
+                                    <td className="px-5 py-3.5">
+                                        <span className="inline-flex items-center rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 px-2.5 py-0.5 text-xs font-medium">
+                                            Health
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-3.5 text-right font-semibold">15.00€</td>
+                                    <td className="px-5 py-3.5 text-right">
+                                        <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+                        <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+                            <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
+                            Spending by Category
+                        </h3>
+                        <div className="h-56 rounded-xl bg-slate-800/50 border border-dashed border-slate-700/40 flex flex-col items-center justify-center gap-2 text-slate-600">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                            </svg>
+                            <span className="text-sm">Pie chart coming soon</span>
+                        </div>
+                    </div>
+                    <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+                        <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
+                            <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
+                            Spending Over Time
+                        </h3>
+                        <div className="h-56 rounded-xl bg-slate-800/50 border border-dashed border-slate-700/40 flex flex-col items-center justify-center gap-2 text-slate-600">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <rect x="2" y="3" width="4" height="18" rx="1" />
+                                <rect x="9" y="8" width="4" height="13" rx="1" />
+                                <rect x="16" y="5" width="4" height="16" rx="1" />
+                            </svg>
+                            <span className="text-sm">Bar chart coming soon</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer className="max-w-6xl mx-auto px-6 py-5 mt-4 border-t border-slate-800/40 flex items-center justify-between text-xs text-slate-600">
+                <span>Budget Lens</span>
+                <span>Built with React &amp; Tailwind CSS</span>
+            </footer>
+        </div>
+    );
 }
 
-export default App
+export default App;
