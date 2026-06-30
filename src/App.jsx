@@ -1,4 +1,40 @@
+import { useState } from 'react';
+
+import { expenses as mockData } from './mocks/mockData';
+import { categoryStyles, defaultCategoryStyle } from './utils/categoryStyles';
+
 function App() {
+    const [expenses, setExpenses] = useState(mockData);
+
+    const [form, setForm] = useState({
+        description: '',
+        amount: '',
+        date: '',
+        category: 'Home',
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const newExpense = {
+            id: expenses.length > 0 ? Math.max(...expenses.map((exp) => exp.id)) + 1 : 1,
+            description: form.description,
+            amount: parseFloat(form.amount),
+            date: form.date,
+            category: form.category,
+        };
+
+        setExpenses((prev) => [newExpense, ...prev]);
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
             <header className="sticky top-0 z-10 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
@@ -63,11 +99,14 @@ function App() {
                             <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
                             Add Expense
                         </h2>
-                        <form className="space-y-3">
+                        <form onSubmit={handleSubmit} className="space-y-3">
                             <label className="block text-sm">
                                 <span className="block mb-1.5 text-slate-400 font-medium">Description</span>
                                 <input
                                     type="text"
+                                    name="description"
+                                    value={form.description}
+                                    onChange={handleChange}
                                     placeholder="e.g. Netflix"
                                     className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
                                 />
@@ -78,6 +117,9 @@ function App() {
                                     <span className="block mb-1.5 text-slate-400 font-medium">Amount</span>
                                     <input
                                         type="number"
+                                        name="amount"
+                                        value={form.amount}
+                                        onChange={handleChange}
                                         placeholder="0.00"
                                         className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
                                     />
@@ -86,6 +128,9 @@ function App() {
                                     <span className="block mb-1.5 text-slate-400 font-medium">Date</span>
                                     <input
                                         type="date"
+                                        name="date"
+                                        value={form.date}
+                                        onChange={handleChange}
                                         className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition"
                                     />
                                 </label>
@@ -93,7 +138,16 @@ function App() {
 
                             <label className="block text-sm">
                                 <span className="block mb-1.5 text-slate-400 font-medium">Category</span>
-                                <select className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
+                                <select
+                                    name="category"
+                                    value={form.category}
+                                    onChange={(e) =>
+                                        setForm({
+                                            ...form,
+                                            category: e.target.value,
+                                        })
+                                    }
+                                    className="w-full rounded-xl bg-slate-800/80 border border-slate-700/70 px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/20 transition">
                                     <option>Home</option>
                                     <option>Food</option>
                                     <option>Health</option>
@@ -134,51 +188,24 @@ function App() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/60">
-                                <tr className="hover:bg-slate-800/30 transition-colors">
-                                    <td className="px-5 py-3.5 text-slate-400">2025-11-01</td>
-                                    <td className="px-5 py-3.5 font-medium">Rent</td>
-                                    <td className="px-5 py-3.5">
-                                        <span className="inline-flex items-center rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2.5 py-0.5 text-xs font-medium">
-                                            Home
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-right font-semibold">850.00€</td>
-                                    <td className="px-5 py-3.5 text-right">
-                                        <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr className="hover:bg-slate-800/30 transition-colors">
-                                    <td className="px-5 py-3.5 text-slate-400">2025-11-02</td>
-                                    <td className="px-5 py-3.5 font-medium">Supermarket</td>
-                                    <td className="px-5 py-3.5">
-                                        <span className="inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2.5 py-0.5 text-xs font-medium">
-                                            Food
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-right font-semibold">120.00€</td>
-                                    <td className="px-5 py-3.5 text-right">
-                                        <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr className="hover:bg-slate-800/30 transition-colors">
-                                    <td className="px-5 py-3.5 text-slate-400">2025-11-04</td>
-                                    <td className="px-5 py-3.5 font-medium">Netflix</td>
-                                    <td className="px-5 py-3.5">
-                                        <span className="inline-flex items-center rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 px-2.5 py-0.5 text-xs font-medium">
-                                            Health
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-3.5 text-right font-semibold">15.00€</td>
-                                    <td className="px-5 py-3.5 text-right">
-                                        <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
-                                            Remove
-                                        </button>
-                                    </td>
-                                </tr>
+                                {expenses.map((expense) => (
+                                    <tr key={expense.id} className="hover:bg-slate-800/30 transition-colors">
+                                        <td className="px-5 py-3.5 text-slate-400">{expense.date}</td>
+                                        <td className="px-5 py-3.5 font-medium">{expense.description}</td>
+                                        <td className="px-5 py-3.5">
+                                            <span
+                                                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${categoryStyles[expense.category] || defaultCategoryStyle}`}>
+                                                {expense.category}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-3.5 text-right font-semibold">{expense.amount.toFixed(2)}€</td>
+                                        <td className="px-5 py-3.5 text-right">
+                                            <button className="text-rose-400/70 hover:text-rose-300 border border-rose-400/20 hover:border-rose-400/40 hover:bg-rose-400/5 px-3 py-1 rounded-lg text-xs transition-all">
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
