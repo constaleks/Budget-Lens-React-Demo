@@ -27,11 +27,4 @@ export const expenses = [
         category: 'Food',
         amount: 26.72,
     },
-    {
-        id: 5,
-        date: '2026-06-18',
-        description: 'Netflix',
-        category: 'Subscriptions',
-        amount: 20.99,
-    },
 ];

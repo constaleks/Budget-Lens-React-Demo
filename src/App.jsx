@@ -3,12 +3,19 @@ import { useState } from 'react';
 import { expenses as mockData } from './mocks/mockData';
 import { categoryStyles, defaultCategoryStyle } from './utils/categoryStyles';
 
+import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import { Pie, Bar } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+
 function App() {
     const [expenses, setExpenses] = useState(mockData);
 
     const [editingExpense, setEditingExpense] = useState(null);
 
     const [deletingExpense, setDeletingExpense] = useState(null);
+
+    const [notification, setNotification] = useState('');
 
     const [filters, setFilters] = useState({
         category: '',
@@ -83,6 +90,8 @@ function App() {
 
         setExpenses((prev) => [newExpense, ...prev]);
 
+        showNotification('✅ Expense added');
+
         setForm({
             description: '',
             amount: '',
@@ -92,6 +101,8 @@ function App() {
     };
 
     const handleUpdateExpense = () => {
+        showNotification('✏️ Expense updated');
+
         setExpenses((prev) =>
             prev.map((expense) => {
                 if (expense.id === editingExpense.id) {
@@ -113,6 +124,7 @@ function App() {
 
     const handleRemove = (id) => {
         setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+        showNotification('🗑️ Expense removed');
     };
 
     const handleOpenDelete = (expense) => {
@@ -164,8 +176,56 @@ function App() {
         return sum + expense.amount;
     }, 0);
 
+    const categoryTotals = expenses.reduce((acc, expense) => {
+        acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+
+        return acc;
+    }, {});
+
+    const categoryChartData = {
+        labels: Object.keys(categoryTotals),
+        datasets: [
+            {
+                data: Object.values(categoryTotals),
+                backgroundColor: ['#fbbf24', '#34d399', '#a78bfa'],
+                borderColor: '#0f172a',
+                borderWidth: 2,
+            },
+        ],
+    };
+
+    const dateTotals = filteredExpenses.reduce((acc, expense) => {
+        acc[expense.date] = (acc[expense.date] || 0) + expense.amount;
+
+        return acc;
+    }, {});
+
+    const dateChartData = {
+        labels: Object.keys(dateTotals),
+        datasets: [
+            {
+                label: 'Expenses',
+                data: Object.values(dateTotals),
+                backgroundColor: 'oklch(60.6% 0.25 292.717)',
+            },
+        ],
+    };
+
+    const showNotification = (message) => {
+        setNotification(message);
+        setTimeout(() => {
+            setNotification('');
+        }, 3000);
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+            {notification && (
+                <div className="fixed top-20 right-5 z-11 rounded border border-slate-600 bg-slate-800 py-2 px-4">
+                    <h3>{notification}</h3>
+                </div>
+            )}
+
             <header className="sticky top-0 z-10 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
@@ -369,12 +429,21 @@ function App() {
                             <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
                             Spending by Category
                         </h3>
-                        <div className="h-56 rounded-xl bg-slate-800/50 border border-dashed border-slate-700/40 flex flex-col items-center justify-center gap-2 text-slate-600">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-                                <path d="M22 12A10 10 0 0 0 12 2v10z" />
-                            </svg>
-                            <span className="text-sm">Pie chart coming soon</span>
+                        <div className="h-64 rounded-xl bg-slate-800/50 border border-dashed border-slate-700/40 flex flex-col items-center justify-center gap-2 text-slate-600">
+                            <Pie
+                                data={categoryChartData}
+                                options={{
+                                    plugins: {
+                                        legend: {
+                                            labels: {
+                                                color: '#94a3b8',
+                                                boxWidth: 12,
+                                                padding: 16,
+                                            },
+                                        },
+                                    },
+                                }}
+                            />
                         </div>
                     </div>
                     <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
@@ -382,13 +451,8 @@ function App() {
                             <span className="w-1 h-4 rounded-full bg-sky-500 inline-block"></span>
                             Spending Over Time
                         </h3>
-                        <div className="h-56 rounded-xl bg-slate-800/50 border border-dashed border-slate-700/40 flex flex-col items-center justify-center gap-2 text-slate-600">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                <rect x="2" y="3" width="4" height="18" rx="1" />
-                                <rect x="9" y="8" width="4" height="13" rx="1" />
-                                <rect x="16" y="5" width="4" height="16" rx="1" />
-                            </svg>
-                            <span className="text-sm">Bar chart coming soon</span>
+                        <div className="h-64 rounded-xl bg-slate-800/50 border border-dashed border-slate-700/40 flex flex-col items-center justify-center gap-2 text-slate-600">
+                            <Bar data={dateChartData} />
                         </div>
                     </div>
                 </section>
