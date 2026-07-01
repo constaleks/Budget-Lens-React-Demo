@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Header from './components/Header';
 import Filters from './components/Filters';
@@ -6,10 +6,11 @@ import ExpenseForm from './components/ExpenseForm';
 import ExpensesTable from './components/ExpensesTable';
 import Charts from './components/Charts';
 
-import { expenses as mockData } from './mocks/mockData';
-
 function App() {
-    const [expenses, setExpenses] = useState(mockData);
+    const [expenses, setExpenses] = useState(() => {
+        const savedExpenses = localStorage.getItem('expenses');
+        return JSON.parse(savedExpenses) || [];
+    });
 
     const [editingExpense, setEditingExpense] = useState(null);
 
@@ -36,6 +37,10 @@ function App() {
         date: '',
         category: 'Home',
     });
+
+    useEffect(() => {
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+    }, [expenses]);
 
     const handleOpenEdit = (expense) => {
         setEditingExpense(expense);

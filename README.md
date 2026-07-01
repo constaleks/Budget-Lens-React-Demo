@@ -42,4 +42,4 @@ The app will be available at `http://localhost:5173` (or the port shown in your 
 - [x] Delete expense functionality
 - [x] Category-based filtering
 - [x] Spending breakdown chart (Chart.js)
-- [ ] Local storage persistence
+- [x] Local storage persistence

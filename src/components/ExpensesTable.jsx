@@ -49,7 +49,7 @@ function ExpensesTable({ filteredExpenses, handleOpenEdit, handleOpenDelete }) {
                             ))
                         ) : (
                             <tr className="hover:bg-slate-800/30 transition-colors">
-                                <td colspan="5" className="px-5 py-3.5 text-slate-400 text-center">
+                                <td colSpan="5" className="px-5 py-3.5 text-slate-400 text-center">
                                     No expenses
                                 </td>
                             </tr>
